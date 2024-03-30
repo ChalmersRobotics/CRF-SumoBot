@@ -1,19 +1,17 @@
 
-#include <hcsr04.h>
+#include <HCSR04.h>
 
-#define TRIG_PIN 10
-#define ECHO_PIN 9
+#define TRIG_PIN 12
+#define ECHO_PIN 11
 
-HCSR04 hcsr04(TRIG_PIN, ECHO_PIN, 20, 4000);
+UltraSonicDistanceSensor hcsr04(TRIG_PIN, ECHO_PIN, 20, 4000);
 
-
-
-const int IN1=6;
-const int IN2=5;
-const int IN3=4;
-const int IN4=3;
-#define IR_sensor_front 8 // front sensor
-#define IR_sensor_back 7 // rear senson
+const int IN1=7;
+const int IN2=6;
+const int IN3=5;
+const int IN4=4;
+#define IR_sensor_front 9 // front sensor
+#define IR_sensor_back 8 // rear senson
 int distance ;
 
 void setup() 
@@ -26,7 +24,7 @@ void loop()
   
  int IR_front = digitalRead(IR_sensor_front);
  int IR_back = digitalRead(IR_sensor_back);
- distance = hcsr04.distanceInMillimeters()/10;
+ distance = hcsr04.measureDistanceCm()/100;
  ROTATE(100);
  
     
@@ -34,7 +32,7 @@ void loop()
     
     FORWARD(100); 
   
-    distance = hcsr04.distanceInMillimeters()/10;
+    distance = hcsr04.measureDistanceCm()/100;
     IR_front = digitalRead(IR_sensor_front);
     IR_back = digitalRead(IR_sensor_back);
     if ( IR_front == 0 || IR_back == 0 ) { break;}
