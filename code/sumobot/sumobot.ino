@@ -1,108 +1,143 @@
 
 #include <HCSR04.h>
 
-#define TRIG_PIN 12
-#define ECHO_PIN 11
+#define SPEED_FORWARDS 150 
+#define SPEED_BACKWARDS 150 
+#define SPEED_ROTATE 150 
 
-UltraSonicDistanceSensor hcsr04(TRIG_PIN, ECHO_PIN, 20, 4000);
+enum PinMappings
+{
+  SIG_START,
+  SIG_KILL, // ;)
+  SENSOR_SND_TRIG,
+  SENSOR_SND_ECHO,
+  SENSOR_IR_FRONT,
+  SENSOR_IR_BACK,
+  MOTOR_IN1,
+  MOTOR_IN2,
+  MOTOR_IN3,
+  MOTOR_IN4,
+  _SIZE_LIMIT,
+};
 
-const int IN1 = 7;
-const int IN2 = 6;
-const int IN3 = 5;
-const int IN4 = 4;
-#define IR_sensor_front 9 // front sensor
-#define IR_sensor_back 8  // rear senson
-int distance;
+static uint8_t const pin[_SIZE_LIMIT] = {
+    [SIG_START] = 2,
+    [SIG_KILL] = 3,
+    [SENSOR_SND_TRIG] = 12,
+    [SENSOR_SND_ECHO] = 11,
+    [SENSOR_IR_FRONT] = 9,
+    [SENSOR_IR_BACK] = 8,
+    [MOTOR_IN1] = 7,
+    [MOTOR_IN2] = 6,
+    [MOTOR_IN3] = 5,
+    [MOTOR_IN4] = 4,
+};
+
+UltraSonicDistanceSensor hcsr04(12, 11);
 
 void setup()
 {
   Serial.begin(9600);
-  delay(5000); // as per sumo compat roles
+  pinMode(pin[MOTOR_IN1], OUTPUT);
+  pinMode(pin[MOTOR_IN2], OUTPUT);
+  pinMode(pin[MOTOR_IN3], OUTPUT);
+  pinMode(pin[MOTOR_IN4], OUTPUT);
+  waitStartSignal();
 }
+
 void loop()
 {
+  float distanceCm = hcsr04.measureDistanceCm();
 
-  int IR_front = digitalRead(IR_sensor_front);
-  int IR_back = digitalRead(IR_sensor_back);
-  distance = hcsr04.measureDistanceCm() / 100;
-  ROTATE(100);
+  rotate_left(SPEED_ROTATE);
 
-  while (distance < 30)
+  while (distanceCm < 45.0f)
   {
-
-    FORWARD(100);
-
-    distance = hcsr04.measureDistanceCm() / 100;
-    IR_front = digitalRead(IR_sensor_front);
-    IR_back = digitalRead(IR_sensor_back);
-    if (IR_front == 0 || IR_back == 0)
+    int frontIR = digitalRead(pin[SENSOR_IR_FRONT]);
+    int backIR = digitalRead(pin[SENSOR_IR_BACK]);
+    if (frontIR == 0)
     {
+      backward(SPEED_BACKWARDS);
+      delay(500);
       break;
     }
+
+    if (backIR == 0)
+    {
+      forward(SPEED_FORWARDS);
+      delay(500);
+      break;
+    }
+    forward(SPEED_FORWARDS);
     delay(10);
+    distanceCm = hcsr04.measureDistanceCm();
   }
+  Serial.println(distanceCm);
+}
 
-  if (IR_front == 0)
+void waitStartSignal()
+{
+  while (digitalRead(pin[SIG_START]) != HIGH)
   {
-    Stop();
-    delay(50);
-    BACKWARD(255);
+    Serial.println("Waiting for start signal");
+  }
+}
+
+void checkStopSignal()
+{
+  if (digitalRead(pin[SIG_KILL]) != HIGH)
+  {
+    Serial.println("Got kill signal, stopping..");
+    stop();
     delay(500);
   }
+}
 
-  if (IR_back == 0) //
-  {
-    Stop();
-    delay(50);
-    FORWARD(255);
-    delay(500);
-  }
+void forward(int speed)
+{
+  Serial.println("Forward");
+  analogWrite(pin[MOTOR_IN1], speed);
+  analogWrite(pin[MOTOR_IN2], 0);
+  analogWrite(pin[MOTOR_IN3], 0);
+  analogWrite(pin[MOTOR_IN4], speed);
+  checkStopSignal();
+}
 
-  Serial.print(distance);
-  // Serial.println("cm");
-  // Serial.println("IR front :");
-  // Serial.println(IR_front);
-  // Serial.println("IR back :");
-  // Serial.println(IR_back);
+void backward(int speed)
+{
+  Serial.println("Backward");
+  analogWrite(pin[MOTOR_IN1], 0);
+  analogWrite(pin[MOTOR_IN2], speed);
+  analogWrite(pin[MOTOR_IN3], speed);
+  analogWrite(pin[MOTOR_IN4], 0);
+  checkStopSignal();
+}
 
-} //--------------------------------------------
-void FORWARD(int Speed)
+void rotate_left(int speed)
 {
-  // When we want to let Motor To move forward,
-  //  just void this part on the loop section .
-  Serial.println("FRAM");
-  analogWrite(IN1, Speed);
-  analogWrite(IN2, 0);
-  analogWrite(IN3, 0);
-  analogWrite(IN4, Speed);
-} //--------------------------------------------
-void BACKWARD(int Speed)
+  Serial.println("Rotate left");
+  analogWrite(pin[MOTOR_IN1], speed);
+  analogWrite(pin[MOTOR_IN2], 0);
+  analogWrite(pin[MOTOR_IN3], speed);
+  analogWrite(pin[MOTOR_IN4], 0);
+  checkStopSignal();
+}
+
+void rotate_right(int speed)
 {
-  // When we want to let Motor To move forward,
-  //  just void this part on the loop section .
-  Serial.println("BAK");
-  analogWrite(IN1, 0);
-  analogWrite(IN2, Speed);
-  analogWrite(IN3, Speed);
-  analogWrite(IN4, 0);
-} //--------------------------------------------
-void ROTATE(int Speed)
+  Serial.println("Rotate right");
+  analogWrite(pin[MOTOR_IN1], 0);
+  analogWrite(pin[MOTOR_IN2], speed);
+  analogWrite(pin[MOTOR_IN3], 0);
+  analogWrite(pin[MOTOR_IN4], speed);
+  checkStopSignal();
+}
+
+void stop()
 {
-  // When we want to let Motor To Rotate ,
-  //  just void this part on the loop section .
-  Serial.println("ROTERA");
-  analogWrite(IN1, Speed);
-  analogWrite(IN2, 0);
-  analogWrite(IN3, Speed);
-  analogWrite(IN4, 0);
-} //--------------------------------------------
-void Stop()
-{
-  // When we want to  Motor To stop ,
-  //  just void this part on the loop section .
-  Serial.println("STOP");
-  analogWrite(IN1, 0);
-  analogWrite(IN2, 0);
-  analogWrite(IN3, 0);
-  analogWrite(IN4, 0);
+  Serial.println("Stop");
+  analogWrite(pin[MOTOR_IN1], 0);
+  analogWrite(pin[MOTOR_IN2], 0);
+  analogWrite(pin[MOTOR_IN3], 0);
+  analogWrite(pin[MOTOR_IN4], 0);
 }
