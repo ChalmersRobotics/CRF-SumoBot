@@ -2,6 +2,8 @@
 
 PORT="/dev/ttyUSB0"
 FQBN="arduino:avr:nano"
+# Chinese copies sometimes use old bootloader
+#BOARD_OPTIONS="cpu=atmega328old"
 BOARD_OPTIONS="cpu=atmega328"
 INO_DIR="sumobot"
 
