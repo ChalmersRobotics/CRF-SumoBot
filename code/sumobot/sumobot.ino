@@ -1,9 +1,8 @@
-
 #include <HCSR04.h>
 
-#define SPEED_FORWARDS 150 
+#define SPEED_FORWARDS 150
 #define SPEED_BACKWARDS 150 
-#define SPEED_ROTATE 150 
+#define SPEED_ROTATE 150
 
 enum PinMappings
 {
@@ -27,10 +26,10 @@ static uint8_t const pin[_SIZE_LIMIT] = {
     [SENSOR_SND_ECHO] = 11,
     [SENSOR_IR_FRONT] = 9,
     [SENSOR_IR_BACK] = 8,
-    [MOTOR_IN1] = 7,
-    [MOTOR_IN2] = 6,
-    [MOTOR_IN3] = 5,
-    [MOTOR_IN4] = 4,
+    [MOTOR_IN1] = 6,
+    [MOTOR_IN2] = 7,
+    [MOTOR_IN3] = 4,
+    [MOTOR_IN4] = 5,
 };
 
 UltraSonicDistanceSensor hcsr04(12, 11);
@@ -49,9 +48,9 @@ void loop()
 {
   float distanceCm = hcsr04.measureDistanceCm();
 
-  rotate_left(SPEED_ROTATE);
+  rotateLeft(SPEED_ROTATE);
 
-  while (distanceCm < 45.0f)
+  while (distanceCm < 20 && distanceCm > 0)
   {
     int frontIR = digitalRead(pin[SENSOR_IR_FRONT]);
     int backIR = digitalRead(pin[SENSOR_IR_BACK]);
@@ -68,15 +67,16 @@ void loop()
       delay(500);
       break;
     }
-    forward(SPEED_FORWARDS);
-    delay(10);
+    forward(SPEED_FORWARDS); 
     distanceCm = hcsr04.measureDistanceCm();
   }
   Serial.println(distanceCm);
+  delay(150);
 }
 
 void waitStartSignal()
 {
+  Serial.println(__func__);
   while (digitalRead(pin[SIG_START]) != HIGH)
   {
     Serial.println("Waiting for start signal");
@@ -95,7 +95,7 @@ void checkStopSignal()
 
 void forward(int speed)
 {
-  Serial.println("Forward");
+  Serial.println(__func__);
   analogWrite(pin[MOTOR_IN1], speed);
   analogWrite(pin[MOTOR_IN2], 0);
   analogWrite(pin[MOTOR_IN3], 0);
@@ -105,7 +105,7 @@ void forward(int speed)
 
 void backward(int speed)
 {
-  Serial.println("Backward");
+  Serial.println(__func__);
   analogWrite(pin[MOTOR_IN1], 0);
   analogWrite(pin[MOTOR_IN2], speed);
   analogWrite(pin[MOTOR_IN3], speed);
@@ -113,9 +113,9 @@ void backward(int speed)
   checkStopSignal();
 }
 
-void rotate_left(int speed)
+void rotateLeft(int speed)
 {
-  Serial.println("Rotate left");
+  Serial.println(__func__);
   analogWrite(pin[MOTOR_IN1], speed);
   analogWrite(pin[MOTOR_IN2], 0);
   analogWrite(pin[MOTOR_IN3], speed);
@@ -123,9 +123,9 @@ void rotate_left(int speed)
   checkStopSignal();
 }
 
-void rotate_right(int speed)
+void rotateRight(int speed)
 {
-  Serial.println("Rotate right");
+  Serial.println(__func__);
   analogWrite(pin[MOTOR_IN1], 0);
   analogWrite(pin[MOTOR_IN2], speed);
   analogWrite(pin[MOTOR_IN3], 0);
@@ -135,7 +135,7 @@ void rotate_right(int speed)
 
 void stop()
 {
-  Serial.println("Stop");
+  Serial.println(__func__);
   analogWrite(pin[MOTOR_IN1], 0);
   analogWrite(pin[MOTOR_IN2], 0);
   analogWrite(pin[MOTOR_IN3], 0);
