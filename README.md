@@ -2,6 +2,8 @@
 
 !["Rendered image of nano-hat v1.2"](https://github.com/user-attachments/assets/4b3bfe92-f011-4b23-bd6a-29615ce4e76a)
 
+Please find the [instructions and schematics in release - here!](https://github.com/ChalmersRobotics/CRF-SumoBot/releases)
+
 # Changelog
 
 | Version     | Changes      |
