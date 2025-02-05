@@ -50,26 +50,18 @@ void loop()
 
   rotateLeft(SPEED_ROTATE);
 
-  while (distanceCm < 20 && distanceCm > 0)
+  while (distanceCm < 40 && distanceCm > 0)
   {
     int frontIR = digitalRead(pin[SENSOR_IR_FRONT]);
     int backIR = digitalRead(pin[SENSOR_IR_BACK]);
-    if (frontIR == 0)
-    {
-      backward(SPEED_BACKWARDS);
-      delay(500);
-      break;
-    }
-
-    if (backIR == 0)
-    {
-      forward(SPEED_FORWARDS);
-      delay(500);
+    if (checkBorder()) {
       break;
     }
     forward(SPEED_FORWARDS); 
     distanceCm = hcsr04.measureDistanceCm();
   }
+  checkBorder();
+ 
   Serial.println(distanceCm);
   delay(150);
 }
@@ -91,6 +83,27 @@ void checkStopSignal()
     stop();
     delay(500);
   }
+}
+
+bool checkBorder()
+{
+  int frontIR = digitalRead(pin[SENSOR_IR_FRONT]);
+  int backIR = digitalRead(pin[SENSOR_IR_BACK]);
+  if (frontIR == 0)
+  {
+    backward(SPEED_BACKWARDS);
+    delay(500);
+    return true;
+  }
+
+  if (backIR == 0)
+  {
+    forward(SPEED_FORWARDS);
+    delay(500);
+    return true;
+  }
+
+  return false;
 }
 
 void forward(int speed)
