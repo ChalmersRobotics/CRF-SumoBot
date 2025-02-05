@@ -4,6 +4,8 @@
 
 Please find the [instructions and schematics in release - here!](https://github.com/ChalmersRobotics/CRF-SumoBot/releases)
 
+[Instruction slides - here](https://github.com/ChalmersRobotics/CRF-SumoBot/releases/download/v1.2/CRF.miniSumo.kit.2025-02-05.pdf)
+
 # Changelog
 
 | Version     | Changes      |
