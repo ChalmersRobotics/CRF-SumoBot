@@ -1,12 +1,15 @@
-# CRF nano-sumohat
+# CRF nano-sumobot incl crf sumo hat
+
+Please find :
+
+- [instructions and workshop intro (v1.2, updated 251104) -here](https://github.com/ChalmersRobotics/CRF-SumoBot/releases/download/v1.2/CRF.miniSumo.kit.2025.workshop.intro.251105a.pdf)
+
+- [3D manufacturing files](https://github.com/ChalmersRobotics/CRF-SumoBot/releases/download/v1.2/Sumobot.v7.3mf)
+
+[complete release package - here!](https://github.com/ChalmersRobotics/CRF-SumoBot/releases)
+
 
 !["Rendered image of nano-hat v1.2"](https://github.com/user-attachments/assets/4b3bfe92-f011-4b23-bd6a-29615ce4e76a)
-
-Please find the [instructions and schematics in release - here!](https://github.com/ChalmersRobotics/CRF-SumoBot/releases)
-
-[Instruction slides - here](https://github.com/ChalmersRobotics/CRF-SumoBot/releases/download/v1.2/CRF.miniSumo.kit.2025-02-05.pdf)
-
-[3D manufacturing files](https://github.com/ChalmersRobotics/CRF-SumoBot/releases/download/v1.2/Sumobot.v7.3mf)
 
 # Changelog
 
