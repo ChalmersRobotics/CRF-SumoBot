@@ -2,7 +2,7 @@
 
 Please find :
 
-- [instructions and workshop intro (v1.2, updated 251104) -here](https://github.com/ChalmersRobotics/CRF-SumoBot/releases/download/v1.2/CRF.miniSumo.kit.2025.workshop.intro.251105a.pdf)
+- [instructions and workshop intro (v1.2, updated 251105) -here](https://github.com/ChalmersRobotics/CRF-SumoBot/releases/download/v1.2/CRF.miniSumo.kit.2025.workshop.intro.251105b.pdf)
 
 - [3D manufacturing files](https://github.com/ChalmersRobotics/CRF-SumoBot/releases/download/v1.2/Sumobot.v7.3mf)
 
